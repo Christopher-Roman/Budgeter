@@ -7,7 +7,7 @@ const session = require('express-session');
 
 const User = require('./models/user');
 
-// const userController = require('./controllers/user');
+const userController = require('./controllers/userController');
 
 require('./db/db')
 
@@ -21,7 +21,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(methodOverride('_method'));
 app.use(express.static('public'));
 
-// app.use('/users', userController);
+app.use('/users', userController);
 
 
 
