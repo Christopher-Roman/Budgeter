@@ -4,6 +4,28 @@ const User 		  = require('../models/user');
 const Budget 	  = require('../models/budget');
 const BudgetItems = require('../models/budgetItems');
 
+// Budget Post Route
+router.post('/new', async (req, res) => {
+	if(req.session.logged) {
+		try {
+			const budgetEntry = {}
+			budgetEntry.budgetName = req.body.budgetName
+			budgetEntry.budgetItem = []
+			
+			const newBudget = await Budget.create(budgetEntry)
+			res.json({
+				status: 200,
+				data: newBudget
+			})
+		} catch(err) {
+			res.json({
+				status: 200,
+				data: err
+			})
+		}
+	}
+})
+
 // Budget Delete Route
 router.delete('/:index', async (req, res) => {
 	try {
@@ -24,20 +46,9 @@ router.delete('/:index', async (req, res) => {
 	}
 })
 
-// New Budget Route
 
-router.post('/budget', async (req, res) => {
-	if(req.session.logged) {
-		try {
-			const newBudget = await Budget.create(req.body);
-			res.json({
-				status: 200,
-				data: newBudget
-			})
-		} catch(err) {
-			res.send(err)
-		}
-	} else {
-		req.session.message = 'You must be logged in to create a new budget.'
-	}
-})
+
+
+
+
+module.exports = router;
