@@ -3,6 +3,12 @@ const router = express.Router();
 const User = require('../models/user');
 const bcrypt = require('bcrypt')
 
+// Login Get Route
+router.get('/login', (req, res) => {
+	req.session.message = undefined;
+	console.log('Login Page Loaded');
+	//still need to add more code here to get the params needed for a react front end.
+})
 
 // Register Post Route
 router.post('/register', async (req, res) => {
@@ -51,6 +57,37 @@ router.get('/logout', (req, res) => {
 			res.redirect('/')
 		}
 	})
+})
+
+// User Delete Route
+router.delete('/delete', async (req, res) => {
+	try {
+		const deletedUser = await User.findOneAndDelete({username: req.session.username});
+		let deletedBudgetsIds = [];
+		for(let i = 0; i < deletedUser.budget.length; i++) {
+			deletedBudgetsIds.push(deletedUser.budget[i].id);
+		}
+		let deletedScenariosIds = [];
+		for(let i = 0; i < deletedUser.scenario.length; i++){
+			deletedScenariosIds.push(deletedUser.scenario[i].id)
+		}
+		let deletedBudgetItemsIds = [];
+		for(let i = 0; i < deletedUser.budgetItem.length; i++) {
+			deletedBudgetItemsIds.push(deletedUser.budgetItem[i].id)
+		}
+		const deletedBudgets = await Budget.deleteMany({
+			_id: {$in: deletedBudgetsIds}
+		})
+		const deletedScenarios = await Scenarios.deleteMany({
+			_id: {$in: deletedScenariosIds}
+		})
+		const deletedBudgetItems = await BudgetItems.deleteMany({
+			_id: {$in: deletedBudgetItemsIds}
+		})
+		res.redirect('/')
+	} catch(err) {
+		res.send(err)
+	}
 })
 
 
