@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
+const Budget = require('../models/budget');
+const BudgetItems = require('../models/budgetItems');
+const Scenarios = require('../models/scenarios');
 const bcrypt = require('bcrypt')
 
 // Login Get Route
