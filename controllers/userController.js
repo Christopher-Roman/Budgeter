@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
 const bcrypt = require('bcrypt')
-// Register Post Route
 
+
+// Register Post Route
 router.post('/register', async (req, res) => {
 	const password = req.body.password;
 	const passwordHash = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
@@ -18,7 +19,6 @@ router.post('/register', async (req, res) => {
 });
 
 // Login Post Route
-
 router.post('/login', async (req, res) => {
 	try {
 		const foundUser = await User.findOne({username: req.body.username});
@@ -39,6 +39,18 @@ router.post('/login', async (req, res) => {
 	} catch(err) {
 		res.send(err);
 	}
+})
+
+// Logout Route
+router.get('/logout', (req, res) => {
+	req.session.destroy((err) => {
+		if(err) {
+			res.send(err);
+		} else {
+			console.log('Logout successful');
+			res.redirect('/')
+		}
+	})
 })
 
 
