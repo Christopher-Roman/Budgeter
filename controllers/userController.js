@@ -1,30 +1,40 @@
-const express = require('express');
-const router = express.Router();
-const User = require('../models/user');
-const Budget = require('../models/budget');
-const BudgetItems = require('../models/budgetItems');
-const Scenarios = require('../models/scenarios');
-const bcrypt = require('bcrypt')
+const express 		= require('express');
+const router 		= express.Router();
+const User 			= require('../models/user');
+const Budget 		= require('../models/budget');
+const BudgetItems 	= require('../models/budgetItems');
+const Scenarios 	= require('../models/scenarios');
+const bcrypt 		= require('bcrypt')
 
 // Login Get Route
-router.get('/login', (req, res) => {
-	req.session.message = undefined;
-	console.log('Login Page Loaded');
-	//still need to add more code here to get the params needed for a react front end.
-})
+// router.get('/login', (req, res) => {
+// 	req.session.message = undefined;
+// 	console.log('Login Page Loaded');
+// 	res.json({
+// 		status: 200,
+// 		data: 'Login Successful'
+// 	})
+// })
 
 // Register Post Route
 router.post('/register', async (req, res) => {
-	const password = req.body.password;
-	const passwordHash = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
-	const userEntry = {};
-	userEntry.username = req.body.username;
-	userEntry.password = passwordHash;
-	const user = await User.create(userEntry);
-	req.session.username = req.body.username;
-	req.session.logged = true;
-	req.session.message = undefined;
-	res.redirect('/');
+	try {
+		const password = req.body.password;
+		const passwordHash = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
+		const userEntry = {};
+		userEntry.username = req.body.username;
+		userEntry.password = passwordHash;
+		const user = await User.create(userEntry);
+		req.session.username = req.body.username;
+		req.session.logged = true;
+		req.session.message = undefined;
+		res.json({
+			status: 200,
+			data: user
+		});
+	} catch(err) {
+		res.send(err)
+	}
 });
 
 // Login Post Route
@@ -36,14 +46,23 @@ router.post('/login', async (req, res) => {
 				req.session.username = req.body.username;
 				req.session.logged = true;
 				req.session.message = undefined;
-				res.redirect('/');
+				res.json({
+					status: 200,
+					data: foundUser
+				})
 			} else {
 				req.session.message = 'Username or password are incorrect.'
-				res.redirect('/users/login')
+				res.json({
+					status: 200,
+					data: 'Login failed. Username or password were incorrect'
+				})
 			}
 		} else {
 			req.session.message = 'Username or password are incorrect.'
-			res.redirect('/users/login')
+			res.json({
+					status: 200,
+					data: 'Login failed. Username or password were incorrect'
+				})
 		}
 	} catch(err) {
 		res.send(err);
@@ -57,7 +76,10 @@ router.get('/logout', (req, res) => {
 			res.send(err);
 		} else {
 			console.log('Logout successful');
-			res.redirect('/')
+			res.json({
+				status: 200,
+				data: 'Logout successful'
+			})
 		}
 	})
 })
@@ -87,7 +109,10 @@ router.delete('/delete', async (req, res) => {
 		const deletedBudgetItems = await BudgetItems.deleteMany({
 			_id: {$in: deletedBudgetItemsIds}
 		})
-		res.redirect('/')
+		res.json({
+			status: 200,
+			data: deletedUser
+		})
 	} catch(err) {
 		res.send(err)
 	}
