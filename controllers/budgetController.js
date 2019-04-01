@@ -4,6 +4,17 @@ const User 		  = require('../models/user');
 const Budget 	  = require('../models/budget');
 const BudgetItems = require('../models/budgetItems');
 
+// Budget Get Route
+router.get('/:id', async (req, res) => {
+	if(req.session.logged) {
+		const budgetView = await Budget.findById(req.params.id)
+		res.json({
+			status: 200,
+			data: budgetView
+		})
+	}
+})
+
 // Budget Post Route
 router.post('/new', async (req, res) => {
 	if(req.session.logged) {
@@ -34,7 +45,8 @@ router.post('/new', async (req, res) => {
 })
 
 // Budget Put Route
-router.put('/:id', async (req, res) => {
+router.put('/:id/update', async (req, res) => {
+	if(req.session.logged) {
 		try {
 			const budgetModel = await Budget.findOne({_id: req.params.id})
 			const newBudget = {
@@ -62,13 +74,14 @@ router.put('/:id', async (req, res) => {
 				status: 200,
 				data: updatedBudget
 			})
-	} catch(err) {
-		console.log(err);
-	}
+		} catch(err) {
+			console.log(err);
+		}
+	} 
 })
 
 // Budget Delete Route
-router.delete('/:id', async (req, res) => {
+router.delete('/:id/delete', async (req, res) => {
 	try {
 		const foundUser = await User.findOne({username: req.session.username})
 		const deletedBudget = await Budget.findOneAndRemove({_id: req.params.id});
