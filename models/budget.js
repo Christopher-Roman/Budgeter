@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const BudgetItems = require('./budgetItems')
+const Scenario = require('./scenarios')
 
 const budgetSchema = new mongoose.Schema({
 	budgetName: {
@@ -14,7 +15,7 @@ const budgetSchema = new mongoose.Schema({
 		type: Number,
 		required: true
 	},
-	budgetItem: [BudgetItem.schema],
+	budgetItem: [BudgetItems.schema],
 	scenario: [Scenario.schema]
 });
 

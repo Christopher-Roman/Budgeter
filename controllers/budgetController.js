@@ -10,7 +10,9 @@ router.post('/new', async (req, res) => {
 		try {
 			const budgetEntry = {}
 			budgetEntry.budgetName = req.body.budgetName
+			budgetEntry.netMonthlyIncome = req.body.netMonthlyIncome
 			budgetEntry.budgetItem = []
+			budgetEntry.scenario = []
 			
 			const newBudget = await Budget.create(budgetEntry)
 			const foundUser = await User.findOne({username: req.session.username});
@@ -33,27 +35,36 @@ router.post('/new', async (req, res) => {
 
 // Budget Put Route
 router.put('/:id', async (req, res) => {
-	const budgetModel = await Budget.findOne({_id: req.params.id})
-	const updatedBudget = {
-		_id: req.params.id,
-		budgetName: req.body.budgetName,
-		created_at: Date.now,
-		netMonthlyIncome: req.body.netMonthlyIncome
-		budgetItem: [],
-		scenario: []
+		try {
+			const budgetModel = await Budget.findOne({_id: req.params.id})
+			const newBudget = {
+				_id: req.params.id,
+				budgetName: req.body.budgetName,
+				netMonthlyIncome: req.body.netMonthlyIncome,
+				budgetItem: [],
+				scenario: []
+			}
+			for(let i = 0; i < budgetModel.budgetItem.length; i++) {
+				newBudget.budgetItem.push(budgetModel.budgetItem[i])
+			}
+			for(let i = 0; i < budgetModel.scenario.length; i++) {
+				newBudget.scenario.push(budgetModel.scenario[i])
+			}
+			const updatedBudget = await Budget.findOneAndUpdate(req.params.id, newBudget, {new: true});
+			updatedBudget.save()
+			const currentUser = await User.findOne({username: req.session.username});
+			console.log(currentUser);
+			currentUser.budget.splice(currentUser.budget.findIndex((budget) => {
+				return budget.id === budgetModel.id;
+			}),1,newBudget);
+			currentUser.save()
+			res.json({
+				status: 200,
+				data: updatedBudget
+			})
+	} catch(err) {
+		console.log(err);
 	}
-	for(let i = 0; i < budgetModel.budgetItem.length; i++) {
-		updatedBudget.budgetItem.push(budgetModel.budgetItem[i])
-	}
-	for(let i = 0; i < budgetModel.scenario.length; i++) {
-		updatedBudget.scenario.push(budgetModel.scenario[i])
-	}
-	const updatedBudget = await Budget.findByIdAndUpdate(req.params.id, updatedBudget, {new: true});
-	updatedBudget.save()
-	res.json({
-		status: 200,
-		data: updatedBudget
-	})
 })
 
 // Budget Delete Route
