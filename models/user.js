@@ -13,10 +13,6 @@ const userSchema = new mongoose.Schema({
 		type: String,
 		required: true
 	},
-	netMonthlyIncome: {
-		type: Number,
-		required: true
-	},
 	budget: [Budget.schema]
 })
 

@@ -33,7 +33,23 @@ router.post('/new', async (req, res) => {
 
 // Budget Put Route
 router.put('/:id', async (req, res) => {
-	const updatedBudget = await Budget.findByIdAndUpdate(req.params.id, req.body, {new: true});
+	const budgetModel = await Budget.findOne({_id: req.params.id})
+	const updatedBudget = {
+		_id: req.params.id,
+		budgetName: req.body.budgetName,
+		created_at: Date.now,
+		netMonthlyIncome: req.body.netMonthlyIncome
+		budgetItem: [],
+		scenario: []
+	}
+	for(let i = 0; i < budgetModel.budgetItem.length; i++) {
+		updatedBudget.budgetItem.push(budgetModel.budgetItem[i])
+	}
+	for(let i = 0; i < budgetModel.scenario.length; i++) {
+		updatedBudget.scenario.push(budgetModel.scenario[i])
+	}
+	const updatedBudget = await Budget.findByIdAndUpdate(req.params.id, updatedBudget, {new: true});
+	updatedBudget.save()
 	res.json({
 		status: 200,
 		data: updatedBudget
