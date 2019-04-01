@@ -31,25 +31,30 @@ router.post('/new', async (req, res) => {
 	}
 })
 
+// Budget Put Route
+router.put('/:id', async (req, res) => {
+	const updatedBudget = await Budget.findByIdAndUpdate(req.params.id, req.body, {new: true});
+	res.json({
+		status: 200,
+		data: updatedBudget
+	})
+})
+
 // Budget Delete Route
 router.delete('/:id', async (req, res) => {
 	try {
 		const foundUser = await User.findOne({username: req.session.username})
-		console.log(foundUser, ' First console log of user');
-		console.log(req.params.id, ' These are the params');
 		const deletedBudget = await Budget.findOneAndRemove({_id: req.params.id});
-		console.log(deletedBudget, ' Deleted budget console log');
 		foundUser.budget.splice(foundUser.budget.findIndex((budget) => {
 			return budget.id === deletedBudget.id
 		}), 1)
-		// let deletedBudgetItemsIds = [];
-		// for(let i = 0; i < deletedBudget.budgetItem.length; i++){
-		// 	deletedBudgetItemsIds.push(deletedBudget.budgetItem[i].id)
-		// }
-		// const deletedBudgetItems = await BudgetItems.deleteMany({
-		// 	_id: {$in: deletedBudgetItemsIds}
-		// })
-		console.log(foundUser, ' Second console log of user');
+		let deletedBudgetItemsIds = [];
+		for(let i = 0; i < deletedBudget.budgetItem.length; i++){
+			deletedBudgetItemsIds.push(deletedBudget.budgetItem[i].id)
+		}
+		const deletedBudgetItems = await BudgetItems.deleteMany({
+			_id: {$in: deletedBudgetItemsIds}
+		})
 		res.json({
 			status: 200,
 			data: foundUser

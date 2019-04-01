@@ -13,9 +13,11 @@ const userSchema = new mongoose.Schema({
 		type: String,
 		required: true
 	},
-	budget: [Budget.schema],
-	budgetItem: [BudgetItem.schema],
-	scenario: [Scenario.schema]
+	netMonthlyIncome: {
+		type: Number,
+		required: true
+	},
+	budget: [Budget.schema]
 })
 
 module.exports = mongoose.model('User', userSchema);
