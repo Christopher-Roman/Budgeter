@@ -13,6 +13,9 @@ router.post('/new', async (req, res) => {
 			budgetEntry.budgetItem = []
 			
 			const newBudget = await Budget.create(budgetEntry)
+			const foundUser = await User.findOne({username: req.session.username});
+			foundUser.budget.push(newBudget);
+			foundUser.save()
 			res.json({
 				status: 200,
 				data: newBudget
@@ -23,6 +26,8 @@ router.post('/new', async (req, res) => {
 				data: err
 			})
 		}
+	} else {
+		req.session.message = 'You must be logged in to create a new budget.'
 	}
 })
 
@@ -45,10 +50,5 @@ router.delete('/:index', async (req, res) => {
 		res.send(err)
 	}
 })
-
-
-
-
-
 
 module.exports = router;
