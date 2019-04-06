@@ -9,7 +9,7 @@ const User = require('./models/user');
 const Budget = require('./models/budget')
 
 const userController = require('./controllers/userController');
-const budgetController = require('./controllers/budgetController')
+const budgetController = require('./controllers/budgetController');
 
 require('./db/db')
 
@@ -24,7 +24,7 @@ app.use(methodOverride('_method'));
 app.use(express.static('public'));
 
 app.use('/users', userController);
-app.use('/budget', budgetController)
+app.use('/budget', budgetController);
 
 
 

@@ -2,7 +2,15 @@ const express 	  = require('express');
 const router 	  = express.Router();
 const User 		  = require('../models/user');
 const Budget 	  = require('../models/budget');
-const BudgetItems = require('../models/budgetItems');
+const BudgetItem  = require('../models/budgetItems');
+const Scenario    = require('../models/scenarios');
+
+
+//============================================================//
+//															  //
+//		These are the routes for Budget's specifically        //
+//															  //
+//============================================================//
 
 // Budget Get Route
 router.get('/:id', async (req, res) => {
@@ -103,5 +111,66 @@ router.delete('/:id/delete', async (req, res) => {
 		res.send(err)
 	}
 })
+
+//============================================================//
+//															  //
+//    These are the routes for Budget Items specifically      //
+//															  //
+//============================================================//
+
+// Budget Item's Get Route
+router.get('/:id/budget-item/:itemId', async (req, res) => {
+	if(req.session.logged) {
+		try {
+			const foundBudgetItem = await BudgetItem.findById(req.params.itemId)
+			res.json({
+				status: 200,
+				data: foundBudgetItem
+			})
+		} catch(err) {
+			res.send(err)
+		}
+	} else {
+		req.session.message = 'You must be logged in to view this page.'
+	}
+	res.json()
+})
+
+// Budget Item's Post Route
+
+router.post('/:id/item/new', async (req, res) => {
+	if(req.session.logged) {
+		try {
+			const foundBudget = await Budget.findById(req.params.id);
+			console.log(foundBudget);
+			const itemToAdd = {
+				itemName: req.body.itemName,
+				amount: req.body.amount
+			}
+			const newBudgetItem = await BudgetItem.create(itemToAdd);
+			foundBudget.budgetItem.push(newBudgetItem);
+			foundBudget.save()
+			console.log(foundBudget);
+			res.json({
+				status: 200,
+				data: foundBudget
+			})
+		} catch(err) {
+			res.json({
+				status: 200,
+				data: err
+			})
+		}
+	} else {
+		req.session.message = 'You must be logged in to create budget items.'
+	}
+})
+
+
+//============================================================//
+//															  //
+//      These are the routes for Scenarios specifically       //
+//															  //
+//============================================================//
 
 module.exports = router;

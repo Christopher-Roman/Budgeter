@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const BudgetItems = require('./budgetItems')
-const Scenario = require('./scenarios')
+const BudgetItems = require('../models/budgetItems')
+const Scenario = require('../models/scenarios')
 
 const budgetSchema = new mongoose.Schema({
 	budgetName: {
