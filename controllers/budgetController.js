@@ -165,6 +165,31 @@ router.post('/:id/item/new', async (req, res) => {
 	}
 })
 
+// Budget Item's Put Route
+
+router.put('/:id/item/:index', async (req, res, next) => {
+	try {
+		const updatedItem = {
+			_id: req.params.index,
+			itemName: req.body.itemName,
+			amount: req.body.amount
+		}
+		const itemToUpdate = await Item.findByIdAndUpdate(req.params.index, updatedItem, {new: true});
+		itemToUpdate.save();
+		const foundBudget = await Budget.findById(req.params.id);
+		foundBudget.budgetItem.splice(foundBudget.budgetItem.findIndex((item) => {
+			return item.id === itemToUpdate.id
+		}), 1, itemToUpdate)
+		foundBudget.save();
+		res.json({
+			status: 200,
+			data: foundBudget
+		})
+	} catch(err) {
+		res.send(err)
+	}
+})
+
 // Budget Item's Delete Route
 
 router.delete('/:id/item/:index', async (req, res, next) => {
