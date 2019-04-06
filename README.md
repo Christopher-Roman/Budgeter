@@ -16,8 +16,8 @@
 	* If I want to buy a new car, how will that impact my monthly bills.
 	* etc.
 
-4. User will be able to see where their money is going using Visualizarion tools:
-	* i.e. Chart.js or D3.js2 or Canvas
+4. User will be able to see where their money is going using Visualization tools:
+	* i.e. Chart.js or D3.js or Canvas
 
 5. User data will be stored under a specific profile and they will be able to change data that has been added.
 
