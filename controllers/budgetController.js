@@ -2,7 +2,7 @@ const express 	  = require('express');
 const router 	  = express.Router();
 const User 		  = require('../models/user');
 const Budget 	  = require('../models/budget');
-const BudgetItem  = require('../models/budgetItems');
+const Item  	  = require('../models/budgetItems');
 const Scenario    = require('../models/scenarios');
 
 
@@ -48,7 +48,7 @@ router.post('/new', async (req, res) => {
 			})
 		}
 	} else {
-		req.session.message = 'You must be logged in to create a new budget.'
+		req.session.message = 'You must be logged in to perform this action.'
 	}
 })
 
@@ -119,10 +119,11 @@ router.delete('/:id/delete', async (req, res) => {
 //============================================================//
 
 // Budget Item's Get Route
-router.get('/:id/budget-item/:itemId', async (req, res) => {
+router.get('/:id/item/:index', async (req, res) => {
 	if(req.session.logged) {
 		try {
-			const foundBudgetItem = await BudgetItem.findById(req.params.itemId)
+			const foundBudgetItem = await Item.findById(req.params.index)
+			console.log(foundBudgetItem);
 			res.json({
 				status: 200,
 				data: foundBudgetItem
@@ -142,15 +143,13 @@ router.post('/:id/item/new', async (req, res) => {
 	if(req.session.logged) {
 		try {
 			const foundBudget = await Budget.findById(req.params.id);
-			console.log(foundBudget);
 			const itemToAdd = {
 				itemName: req.body.itemName,
 				amount: req.body.amount
 			}
-			const newBudgetItem = await BudgetItem.create(itemToAdd);
+			const newBudgetItem = await Item.create(itemToAdd);
 			foundBudget.budgetItem.push(newBudgetItem);
 			foundBudget.save()
-			console.log(foundBudget);
 			res.json({
 				status: 200,
 				data: foundBudget
@@ -162,7 +161,26 @@ router.post('/:id/item/new', async (req, res) => {
 			})
 		}
 	} else {
-		req.session.message = 'You must be logged in to create budget items.'
+		req.session.message = 'You must be logged in to perform this action.'
+	}
+})
+
+// Budget Item's Delete Route
+
+router.delete('/:id/item/:index', async (req, res, next) => {
+	try {
+		const deletedItem = await Item.findByIdAndRemove(req.params.index);
+		const currentBudget = await Budget.findById(req.params.id);
+		currentBudget.budgetItem.splice(currentBudget.budgetItem.findIndex((item) => {
+			return item.id === deletedItem.id
+		}), 1)
+		currentBudget.save()
+		res.json({
+			status: 200,
+			data: currentBudget
+		})
+	} catch(err) {
+		res.send(err)
 	}
 })
 

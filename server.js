@@ -10,6 +10,7 @@ const Budget = require('./models/budget')
 
 const userController = require('./controllers/userController');
 const budgetController = require('./controllers/budgetController');
+const budgetItemsController = require('./controllers/budgetController')
 
 require('./db/db')
 
@@ -25,6 +26,7 @@ app.use(express.static('public'));
 
 app.use('/users', userController);
 app.use('/budget', budgetController);
+app.use('/items', budgetItemsController);
 
 
 
