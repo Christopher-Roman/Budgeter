@@ -1,9 +1,9 @@
-const express = require('express');
-const app = express();
-const PORT = process.env.PORT || 3000;
-const bodyParser = require('body-parser');
+const express 		 = require('express');
+const app 			 = express();
+const PORT 			 = process.env.PORT || 3000;
+const bodyParser 	 = require('body-parser');
 const methodOverride = require('method-override')
-const session = require('express-session');
+const session 		 = require('express-session');
 
 const User = require('./models/user');
 const Budget = require('./models/budget')
