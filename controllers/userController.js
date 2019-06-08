@@ -38,7 +38,7 @@ router.post('/register', async (req, res) => {
 });
 
 // Login Post Route
-router.post('/login', async (req, res) => {
+router.post('/login', async (req, res, next) => {
 	try {
 		const foundUser = await User.findOne({username: req.body.username});
 		if(foundUser) {
@@ -53,19 +53,19 @@ router.post('/login', async (req, res) => {
 			} else {
 				req.session.message = 'Username or password are incorrect.'
 				res.json({
-					status: 200,
+					status: 401,
 					data: 'Login failed. Username or password were incorrect'
 				})
 			}
 		} else {
 			req.session.message = 'Username or password are incorrect.'
 			res.json({
-					status: 200,
+					status: 400,
 					data: 'Login failed. Username or password were incorrect'
 				})
 		}
 	} catch(err) {
-		res.send(err);
+		next(err);
 	}
 })
 
@@ -77,7 +77,7 @@ router.get('/logout', (req, res) => {
 		} else {
 			res.json({
 				status: 200,
-				data: 'Logout successful'
+				data: 'Logout Successful'
 			})
 		}
 	})

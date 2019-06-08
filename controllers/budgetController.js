@@ -13,20 +13,30 @@ const Scenario    = require('../models/scenarios');
 //============================================================//
 
 // Budget Get Route
-router.get('/:id', async (req, res) => {
+router.get('/', async (req, res) => {
 	if(req.session.logged) {
-		const budgetView = await Budget.findById(req.params.id)
-		res.json({
-			status: 200,
-			data: budgetView
-		})
+		const foundUser = await User.find({username: req.session.username})
+		if(foundUser === undefined || foundUser === null){
+			res.json({
+				status: 204,
+				data: 'No budgets have been created'
+			})
+		} else {
+			res.json({
+				status: 200,
+				data: foundUser
+			})
+		}
 	}
 })
 
 // Budget Post Route
 router.post('/new', async (req, res) => {
 	if(req.session.logged) {
+		const forbidden = 'You must be logged in to perform this action.'
 		try {
+			console.log('Route has been hit!');
+			console.log(req.body);
 			const budgetEntry = {}
 			budgetEntry.budgetName = req.body.budgetName
 			budgetEntry.netMonthlyIncome = req.body.netMonthlyIncome
@@ -43,12 +53,16 @@ router.post('/new', async (req, res) => {
 			})
 		} catch(err) {
 			res.json({
-				status: 200,
+				status: 400,
 				data: err
 			})
 		}
 	} else {
-		req.session.message = 'You must be logged in to perform this action.'
+		console.log('hit the else statement 403 status');
+		res.json({
+			status: 403,
+			data: forbidden
+		}) 
 	}
 })
 
@@ -73,7 +87,6 @@ router.put('/:id/update', async (req, res) => {
 			const updatedBudget = await Budget.findOneAndUpdate(req.params.id, newBudget, {new: true});
 			updatedBudget.save()
 			const currentUser = await User.findOne({username: req.session.username});
-			console.log(currentUser);
 			currentUser.budget.splice(currentUser.budget.findIndex((budget) => {
 				return budget.id === budgetModel.id;
 			}),1,newBudget);
@@ -123,7 +136,6 @@ router.get('/:id/item/:index', async (req, res) => {
 	if(req.session.logged) {
 		try {
 			const foundBudgetItem = await Item.findById(req.params.index)
-			console.log(foundBudgetItem);
 			res.json({
 				status: 200,
 				data: foundBudgetItem

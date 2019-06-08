@@ -11,10 +11,7 @@ const budgetSchema = new mongoose.Schema({
 		type: Date,
 		default: Date.now
 	},
-	netMonthlyIncome: {
-		type: Number,
-		required: true
-	},
+	netMonthlyIncome: Number,
 	budgetItem: [BudgetItems.schema],
 	scenario: [Scenario.schema]
 });

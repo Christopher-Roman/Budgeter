@@ -1,9 +1,13 @@
 const express 		 = require('express');
 const app 			 = express();
-const PORT 			 = process.env.PORT || 3000;
+const PORT 			 = process.env.PORT;
 const bodyParser 	 = require('body-parser');
 const methodOverride = require('method-override')
 const session 		 = require('express-session');
+const cors 			 = require('cors');
+require('dotenv').config({path:'./.env'})
+require('es6-promise').polyfill();
+require('isomorphic-fetch');
 
 const User = require('./models/user');
 const Budget = require('./models/budget')
@@ -21,8 +25,17 @@ app.use(session({
 }));
 
 app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json())
 app.use(methodOverride('_method'));
 app.use(express.static('public'));
+
+const corsOptions = {
+	origin: process.env.HOST,
+	credentials: true,
+	optionsSuccessStatus: 200
+}
+
+app.use(cors(corsOptions))
 
 app.use('/users', userController);
 app.use('/budget', budgetController);
@@ -32,6 +45,6 @@ app.use('/items', budgetItemsController);
 
 
 
-app.listen(PORT, () => {
-	console.log('Server is listening on port ' + PORT);
+app.listen(9000, () => {
+	console.log('Server is up and running!');
 })
