@@ -12,7 +12,7 @@ const Scenario    = require('../models/scenarios');
 //															  //
 //============================================================//
 
-// Budget Get Route
+// Budget Get All Route
 router.get('/', async (req, res) => {
 	if(req.session.logged) {
 		const foundUser = await User.find({username: req.session.username})
@@ -25,6 +25,25 @@ router.get('/', async (req, res) => {
 			res.json({
 				status: 200,
 				data: foundUser
+			})
+		}
+	}
+})
+
+router.get('/:id', async (req, res) => {
+	if(req.session.logged) {
+		console.log('Route is being hit!');
+		const noBudget = 'There is no budget under that ID'
+		const foundBudget = await Budget.findById(req.params.id);
+		if(!foundBudget) {
+			res.json({
+				status: 204,
+				data: noBudget
+			})
+		} else {
+			res.json({
+				status: 200,
+				data: foundBudget
 			})
 		}
 	}
