@@ -32,7 +32,6 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
 	if(req.session.logged) {
-		console.log('Route is being hit!');
 		const noBudget = 'There is no budget under that ID'
 		const foundBudget = await Budget.findById(req.params.id);
 		if(!foundBudget) {
@@ -52,10 +51,7 @@ router.get('/:id', async (req, res) => {
 // Budget Post Route
 router.post('/new', async (req, res) => {
 	if(req.session.logged) {
-		const forbidden = 'You must be logged in to perform this action.'
 		try {
-			console.log('Route has been hit!');
-			console.log(req.body);
 			const budgetEntry = {}
 			budgetEntry.budgetName = req.body.budgetName
 			budgetEntry.netMonthlyIncome = req.body.netMonthlyIncome
@@ -77,6 +73,7 @@ router.post('/new', async (req, res) => {
 			})
 		}
 	} else {
+		const forbidden = 'You must be logged in to perform this action.'
 		console.log('hit the else statement 403 status');
 		res.json({
 			status: 403,
@@ -121,23 +118,33 @@ router.put('/:id/update', async (req, res) => {
 })
 
 // Budget Delete Route
-router.delete('/:id/delete', async (req, res) => {
+router.delete('/delete/:id', async (req, res) => {
 	try {
-		const foundUser = await User.findOne({username: req.session.username})
-		const deletedBudget = await Budget.findOneAndRemove({_id: req.params.id});
-		foundUser.budget.splice(foundUser.budget.findIndex((budget) => {
-			return budget.id === deletedBudget.id
+		const currentUser = await User.findOne({username: req.session.username})
+		console.log(currentUser);
+		console.log('=== Before Splice ===');
+		currentUser.budget.splice(currentUser.budget.findIndex((budget) => {
+			return budget._id === req.params.id
 		}), 1)
-		let deletedBudgetItemsIds = [];
-		for(let i = 0; i < deletedBudget.budgetItem.length; i++){
-			deletedBudgetItemsIds.push(deletedBudget.budgetItem[i].id)
+		console.log(currentUser);
+		console.log('=== After Splice ===');
+		await currentUser.save()
+		const foundBudget = await Budget.findById(req.params.id)
+		console.log(foundBudget);
+		console.log('=== Before Delete ===');
+		let deletedItemIds = []
+		for(let i = 0; i < foundBudget.budgetItem.length; i++) {
+			deletedItemIds.push(foundBudget.budgetItem[i].id)
 		}
-		const deletedBudgetItems = await BudgetItems.deleteMany({
-			_id: {$in: deletedBudgetItemsIds}
+		console.log(deletedItems);
+		console.log('=== Deleted Items ===');
+		const deletedBudget = await Budget.findByIdAndDelete(req.params.id)
+		const deletedItems = await Item.deleteMany({
+			_id: {$in: deletedItemIds}
 		})
+		await currentUser.save()
 		res.json({
-			status: 200,
-			data: foundUser
+			status: 200
 		})
 	} catch(err) {
 		res.send(err)
@@ -187,7 +194,7 @@ router.post('/:id/item/new', async (req, res) => {
 			})
 		} catch(err) {
 			res.json({
-				status: 200,
+				status: 204,
 				data: err
 			})
 		}
