@@ -135,7 +135,8 @@ router.delete('/delete/:id', async (req, res) => {
 		})
 		await currentUser.save()
 		res.json({
-			status: 200
+			status: 200,
+			data: currentUser
 		})
 	} catch(err) {
 		res.send(err)
