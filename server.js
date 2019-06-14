@@ -20,13 +20,7 @@ const budgetItemsController = require('./controllers/budgetController')
 require('./db/db')
 
 app.use(session({
-	secret: 'process.env.SECRET',
-	store: new AerospikeStore({
-    namespace: 'express',
-    set: 'session',
-    ttl: 86400, // 1 day
-    hosts: process.env.HOST
-  }),
+	secret: process.env.SECRET,
 	resave: 'false',
 	saveUninitialized: false
 }));
