@@ -20,7 +20,7 @@ const budgetItemsController = require('./controllers/budgetController')
 require('./db/db')
 
 app.use(session({
-	secret: process.env.SECRET,
+	secret: 'process.env.SECRET',
 	store: new AerospikeStore({
     namespace: 'express',
     set: 'session',
@@ -32,7 +32,7 @@ app.use(session({
 }));
 
 app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json())
+app.use(bodyParser.json())	
 app.use(methodOverride('_method'));
 app.use(express.static('public'));
 
