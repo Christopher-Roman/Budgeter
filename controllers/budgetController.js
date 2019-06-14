@@ -121,23 +121,14 @@ router.put('/:id/update', async (req, res) => {
 router.delete('/delete/:id', async (req, res) => {
 	try {
 		const currentUser = await User.findOne({username: req.session.username})
-		console.log(currentUser);
-		console.log('=== Before Splice ===');
 		currentUser.budget.splice(currentUser.budget.findIndex((budget) => {
 			return budget._id === req.params.id
 		}), 1)
-		console.log(currentUser);
-		console.log('=== After Splice ===');
-		await currentUser.save()
 		const foundBudget = await Budget.findById(req.params.id)
-		console.log(foundBudget);
-		console.log('=== Before Delete ===');
 		let deletedItemIds = []
 		for(let i = 0; i < foundBudget.budgetItem.length; i++) {
 			deletedItemIds.push(foundBudget.budgetItem[i].id)
 		}
-		console.log(deletedItems);
-		console.log('=== Deleted Items ===');
 		const deletedBudget = await Budget.findByIdAndDelete(req.params.id)
 		const deletedItems = await Item.deleteMany({
 			_id: {$in: deletedItemIds}

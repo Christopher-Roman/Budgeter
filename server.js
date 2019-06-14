@@ -19,7 +19,7 @@ const budgetItemsController = require('./controllers/budgetController')
 require('./db/db')
 
 app.use(session({
-	secret: 'super secret string',
+	secret: process.env.SECRET,
 	resave: 'false',
 	saveUninitialized: false
 }));
@@ -41,10 +41,6 @@ app.use('/users', userController);
 app.use('/budget', budgetController);
 app.use('/items', budgetItemsController);
 
-
-
-
-
-app.listen(9000, () => {
+app.listen(process.env.PORT, () => {
 	console.log('Server is up and running!');
 })

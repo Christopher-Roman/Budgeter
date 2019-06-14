@@ -6,16 +6,6 @@ const BudgetItems 	= require('../models/budgetItems');
 const Scenarios 	= require('../models/scenarios');
 const bcrypt 		= require('bcrypt')
 
-// Login Get Route
-// router.get('/login', (req, res) => {
-// 	req.session.message = undefined;
-// 	console.log('Login Page Loaded');
-// 	res.json({
-// 		status: 200,
-// 		data: 'Login Successful'
-// 	})
-// })
-
 // Register Post Route
 router.post('/register', async (req, res) => {
 	try {
