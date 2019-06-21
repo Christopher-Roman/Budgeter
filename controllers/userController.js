@@ -6,6 +6,12 @@ const BudgetItems 	= require('../models/budgetItems');
 const Scenarios 	= require('../models/scenarios');
 const bcrypt 		= require('bcrypt')
 
+//=======================================================//
+//													     //
+//		These are the routes for User specifically       //
+//														 //
+//=======================================================//
+
 // Register Post Route
 router.post('/register', async (req, res) => {
 	try {
