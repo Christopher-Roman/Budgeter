@@ -86,30 +86,22 @@ router.post('/new', async (req, res) => {
 router.put('/:id/update', async (req, res) => {
 	if(req.session.logged) {
 		try {
-			const budgetModel = await Budget.findOne({_id: req.params.id})
-			const newBudget = {
-				_id: req.params.id,
+			const updatedBudget = {
 				budgetName: req.body.budgetName,
 				netMonthlyIncome: req.body.netMonthlyIncome,
-				budgetItem: [],
-				scenario: []
+				_id: req.params.id
 			}
-			for(let i = 0; i < budgetModel.budgetItem.length; i++) {
-				newBudget.budgetItem.push(budgetModel.budgetItem[i])
-			}
-			for(let i = 0; i < budgetModel.scenario.length; i++) {
-				newBudget.scenario.push(budgetModel.scenario[i])
-			}
-			const updatedBudget = await Budget.findOneAndUpdate(req.params.id, newBudget, {new: true});
-			updatedBudget.save()
-			const currentUser = await User.findOne({username: req.session.username});
-			currentUser.budget.splice(currentUser.budget.findIndex((budget) => {
-				return budget.id === budgetModel.id;
-			}),1,newBudget);
-			currentUser.save()
+			const budgetToUpdate = await Budget.findByIdAndUpdate(req.params.id, updatedBudget, {new: true});
+			budgetToUpdate.save()
+			const foundUser = await User.find({username: req.session.username});
+			let updateUser = foundUser[0];
+			updateUser.budget.splice(updateUser.budget.findIndex((budget) => {
+				return budget.id === budgetToUpdate.id
+			}),1,budgetToUpdate)
+			updateUser.save()
 			res.json({
 				status: 200,
-				data: updatedBudget
+				data: budgetToUpdate
 			})
 		} catch(err) {
 			console.log(err);

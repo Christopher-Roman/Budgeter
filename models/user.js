@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Budget = require('./budget');
-const BudgetItem = require('./budgetItems');
-const Scenario = require('./scenarios');
+const BudgetItems = require('./budgetItems');
+const Scenarios = require('./scenarios');
 
 const userSchema = new mongoose.Schema({
 	username: {
@@ -13,7 +13,9 @@ const userSchema = new mongoose.Schema({
 		type: String,
 		required: true
 	},
-	budget: [Budget.schema]
+	budget: [Budget.schema],
+	scenarios: [Scenarios.schema],
+	budgetItems: [BudgetItems.schema]
 })
 
 module.exports = mongoose.model('User', userSchema);
