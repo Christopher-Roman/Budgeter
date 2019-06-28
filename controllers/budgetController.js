@@ -189,6 +189,26 @@ router.post('/:id/item/new', async (req, res) => {
 
 // Budget Item's Put Route
 
+
+// Budget Item's Delete Route
+
+router.delete('/:id/item/:index/delete', async (req, res, next) => {
+	try {
+		const deletedItem = await Item.findByIdAndRemove(req.params.index);
+		const currentBudget = await Budget.findById(req.params.id);
+		currentBudget.budgetItem.splice(currentBudget.budgetItem.findIndex((item) => {
+			return item.id === deletedItem.id
+		}), 1)
+		currentBudget.save()
+		res.json({
+			status: 200,
+			data: currentBudget
+		})
+	} catch(err) {
+		res.send(err)
+	}
+})
+
 router.put('/:id/item/:index/edit', async (req, res, next) => {
 	try {
 		const updatedItem = {
@@ -211,26 +231,6 @@ router.put('/:id/item/:index/edit', async (req, res, next) => {
 		res.send(err)
 	}
 })
-
-// Budget Item's Delete Route
-
-router.delete('/:id/item/:index/delete', async (req, res, next) => {
-	try {
-		const deletedItem = await Item.findByIdAndRemove(req.params.index);
-		const currentBudget = await Budget.findById(req.params.id);
-		currentBudget.budgetItem.splice(currentBudget.budgetItem.findIndex((item) => {
-			return item.id === deletedItem.id
-		}), 1)
-		currentBudget.save()
-		res.json({
-			status: 200,
-			data: currentBudget
-		})
-	} catch(err) {
-		res.send(err)
-	}
-})
-
 
 //============================================================//
 //															  //
