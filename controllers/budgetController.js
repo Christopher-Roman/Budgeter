@@ -101,7 +101,7 @@ router.put('/:id/update', async (req, res) => {
 			updateUser.save()
 			res.json({
 				status: 200,
-				data: budgetToUpdate
+				data: updateUser
 			})
 		} catch(err) {
 			console.log(err);
@@ -189,7 +189,7 @@ router.post('/:id/item/new', async (req, res) => {
 
 // Budget Item's Put Route
 
-router.put('/:id/item/:index', async (req, res, next) => {
+router.put('/:id/item/:index/edit', async (req, res, next) => {
 	try {
 		const updatedItem = {
 			_id: req.params.index,
@@ -214,7 +214,7 @@ router.put('/:id/item/:index', async (req, res, next) => {
 
 // Budget Item's Delete Route
 
-router.delete('/:id/item/:index', async (req, res, next) => {
+router.delete('/:id/item/:index/delete', async (req, res, next) => {
 	try {
 		const deletedItem = await Item.findByIdAndRemove(req.params.index);
 		const currentBudget = await Budget.findById(req.params.id);
