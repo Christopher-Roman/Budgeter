@@ -35,7 +35,7 @@
     "method-override": "^3.0.0",
     "mongoose": "^5.7.5",
     "node-fetch": "^2.2.1",
-    "nodemon": "^1.19.1",
+    "nodemon": "^3.0.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-router-dom": "^5.0.0",
