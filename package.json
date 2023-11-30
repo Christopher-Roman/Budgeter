@@ -24,7 +24,7 @@
   "homepage": "https://github.com/Christopher-Roman/BudgetApp#readme",
   "dependencies": {
     "aerospike-session-store": "^0.4.0",
-    "bcrypt": "^3.0.5",
+    "bcrypt": "^5.0.1",
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",
