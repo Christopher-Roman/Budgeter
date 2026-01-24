@@ -24,7 +24,7 @@
   "homepage": "https://github.com/Christopher-Roman/BudgetApp#readme",
   "dependencies": {
     "aerospike-session-store": "^0.4.0",
-    "bcrypt": "^3.0.5",
+    "bcrypt": "^5.0.1",
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",
@@ -35,7 +35,7 @@
     "method-override": "^3.0.0",
     "mongoose": "^5.7.5",
     "node-fetch": "^2.2.1",
-    "nodemon": "^1.19.1",
+    "nodemon": "^2.0.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-router-dom": "^5.0.0",
